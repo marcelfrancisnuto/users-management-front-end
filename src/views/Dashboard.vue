@@ -1,15 +1,14 @@
 <template>
-  <Users/>
+  <UsersManagement/>
 </template>
 
 <script>
-// @ is an alias to /src
-import Users from '@/components/Users.vue'
+import UsersManagement from '@/components/UsersManagement.vue'
 
 export default {
-  name: 'Home',
+  name: 'Dashboard',
   components: {
-    Users
+    UsersManagement
   }
 }
 </script>

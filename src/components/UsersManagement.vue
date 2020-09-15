@@ -3,15 +3,7 @@
         <table class="table table-responsive table-striped highlight z-depth-1 hoverable">
             <thead>
                 <tr>
-                    <th>Select</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Address</th>
-                    <th>Postal Code</th>
-                    <th>Phone Number</th>
-                    <th>Email</th>
-                    <th>Username</th>
-                    <th>Actions</th>
+                    <th v-for="field in fields" :key="field">{{field}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +29,9 @@
             <ul class="pagination">
                 <li v-bind:class="[{disabled: !pagination.previous_page_url}]" class="page-item">
                     <a class="page-link" href="#" @click="getUsers(pagination.previous_page_url)">Previous</a>
+                <li class="page-item disabled">
+                    <a href="#" class="page-link text-dark">Page {{pagination.current_page}} of {{pagination.last_page}}</a>
+                </li>
                 <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
                     <a class="page-link" href="#" @click="getUsers(pagination.next_page_url)">Next</a>
                 </li>
@@ -51,11 +46,24 @@
     import axios from 'axios'
 
     export default {
+        name: 'UsersManagement',
+        components: {},
         data() {
             return {
                 users: [],
                 pagination: {},
-                selected: []
+                selected: [],
+                fields: [
+                    'Select',
+                    'First Name',
+                    'Last Name',
+                    'Address',
+                    'Postal Code',
+                    'Phone Number',
+                    'Email',
+                    'Username',
+                    'Actions'
+                ]
             }
         },
         created() {
@@ -73,10 +81,19 @@
                 })
                 .catch(err => console.log(err))
             },
-            deleteUser(id) {
+            async deleteUser(id) {
                 if (confirm("Do you want to delete this user?")) {
-                console.log(`deleting ${id}`);
-
+                    axios.delete(`http://localhost:8000/api/users/${id}`)
+                    .then(res => {
+                        console.log(res);
+                        if (res.data.message) {
+                            alert('User has been deleted');
+                            //reload list of users
+                            this.getUsers();
+                        } else if (res.data.errors) {
+                            alert('There was an error with your request')
+                        }
+                    });
                 }
             },
             deleteSelectedUsers() {
@@ -98,29 +115,26 @@
                 }
 
                 this.pagination = pagination;
-            },
-            selectItems(e) {
-                console.log(e);
             }
         },
         computed: {
+            //add selected users to an array, remove if deselected
             selectedUsers: {
-            get() {
-                return this.selected;
-            },
-            set(value) {
-                this.selected = value;
-            }
+                get() {
+                    return this.selected;
+                },
+                set(value) {
+                    this.selected = value;
+                }
             }
         }
-        
     }
 </script>
 
 <style scoped>
-    .table { 
+    /* .table { 
         max-width: none;
         table-layout: fixed;
         word-wrap: break-word;
-    }
+    } */
 </style>
