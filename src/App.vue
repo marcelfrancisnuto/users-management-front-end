@@ -13,7 +13,9 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <router-view/>
+    <div class="container-fluid">
+      <router-view/>
+    </div>
   </div>
 </template>
 
