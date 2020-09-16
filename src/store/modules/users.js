@@ -3,16 +3,16 @@ import axios from 'axios'
 const state = {
     users: [],
     pagination: {},
-    selectedItems: [],
     user: {},
-    api_host: 'http://localhost:8000'
+    api_host: 'http://localhost:8000',
+    update: false
 }
 
 const getters = {
     allUsers: state => state.users,
     allPagination: state => state.pagination,
-    selectedUsers: state => state.selectedUsers,
-    
+    selectedUser: state => state.user,
+    updateToggle: state => state.update
 }
 
 const actions = {
@@ -40,7 +40,6 @@ const actions = {
             axios.delete(`${state.api_host}/api/users/${id}`)
             .then(res => {
                 if (res.data.message) {
-                    alert('User has been deleted');
                     commit('removeUser', id)
                 } else if (res.data.errors) {
                     alert('There was an error with your request')
@@ -51,20 +50,49 @@ const actions = {
     async addUser({ commit }, user) {
         console.log(user)
         const response = await axios.post(
-            `${state.api_host}/users`,
+            `${state.api_host}/api/users`,
             user
         )
 
-        commit('newUser', response.data.data)
+        if (response.data.success) {
+            alert('User has been created')
+            commit('newUser', response.data.data)
+        }
+    },
+    async batchDeleteUsers({commit}, users) {
+        if (confirm('Are you sure you want to delete these users?')) {
+            let ids = []
+
+            users.forEach(user => ids.push(user.id))
+
+            axios.delete(`${state.api_host}/api/users/${ids.join(',')}`)
+                .then(res => {
+                    if (res.data.success) {
+                        users.forEach(user => {
+                            commit('removeUser', user.id)
+                        })
+                    } else {
+                        console.log(res.data.error)
+                    }
+                })
+        }
+    },
+    selectUser({ commit }, user) {
+        commit('setSelectedUser', user)
+        commit('toggleUpdate', true)
+    },
+    cancelUpdate({commit}) {
+        commit('toggleUpdate', false)
     }
 }
 
 const mutations = {
     setUsers: (state, users) => (state.users = users),
     setPagination: (state, pagination) => (state.pagination = pagination),
-    setSelectedUsers: (state, selectedItems) => (state.selectedItems = selectedItems),
+    newUser: (state, user) => state.users.unshift(user),
     removeUser: (state, id) => state.users = state.users.filter(user => user.id != id),
-    newUser: (state, user) => (state.user = user)
+    setSelectedUser: (state, user) => (state.user = user),
+    toggleUpdate: (state, update) => (state.update = update)
 }
 
 export default {

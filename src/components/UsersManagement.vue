@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <UserForm/>
+        <UserForm />
 
         <div class="col-md-12 mb-4">
             <div class="card card-default">
@@ -15,9 +15,9 @@
                             <tr v-for="user in allUsers" :key="user.id">
                                 <td>
                                     <b-form-checkbox 
-                                        v-model="selectedUsers" 
+                                        v-model="selectUsers"
                                         :id="user.username" 
-                                        :value="user.id"
+                                        :value="user"
                                     ></b-form-checkbox>
                                 </td>
                                 <td>{{user.first_name}}</td>
@@ -28,7 +28,7 @@
                                 <td>{{user.email}}</td>
                                 <td>{{user.username}}</td>
                                 <td> 
-                                    <a href="#"><b-icon variant="primary" icon="pencil"></b-icon></a>
+                                    <router-link :to="{path: '/edit/'+ user.id, params: {data: user}}" @click.prevent="selectUser(user)"><b-icon variant="primary" icon="pencil"></b-icon></router-link>
                                     &nbsp;
                                     <a href="#" @click.prevent="deleteUser(user.id)">
                                         <b-icon variant="primary" icon="trash"></b-icon>
@@ -60,7 +60,7 @@
         <div class="col-md-12 mb-4">
             <button 
                 class="btn btn-danger float-left" 
-                @click="deleteSelectedUsers()" 
+                @click="batchDelete()" 
                 v-bind:class="[{disabled: selected.length == 0}]" :disabled="selected.length == 0"
             >Delete selected
             </button>
@@ -72,6 +72,7 @@
 
     // import axios from 'axios'
     import UserForm from '@/components/UserForm.vue'
+
     import { mapGetters, mapActions } from 'vuex'
 
     export default {
@@ -99,19 +100,25 @@
             }
         },
         methods: {
-            ...mapActions(['fetchUsers', 'deleteUser'])
+            ...mapActions(['fetchUsers', 'deleteUser', 'selectUser', 'batchDeleteUsers']),
+            toggleUpdate() {
+                console.log('update toggled...')
+                this.updating = true
+            },
+            batchDelete() {
+                this.batchDeleteUsers(this.selected)
+            }
         },
         computed: {
             ...mapGetters(['allUsers', 'allPagination']),
-            selectedUsers: {
+            selectUsers: {
                 get() {
                     return this.selected
                 },
-                set(value) {
-                    this.selected = value
-                    this.$store.commit('setSelectedUsers', value)
+                set(val) {
+                    this.selected = val
                 }
-            },
+            }
         },
         created() {
             this.fetchUsers()
