@@ -22,7 +22,9 @@ $ cd dist
 $ npm run serve
 ```
 
-### Run your unit tests(not available)
+Access the app using default url `http://localhost:8080`
+
+### Run your unit tests(tests not available)
 ```
 npm run test:unit
 ```

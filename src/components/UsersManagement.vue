@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <UserForm />
+        <UserForm :testUser.sync="setUser"/>
 
         <div class="col-md-12 mb-4">
             <div class="card card-default">
@@ -28,7 +28,7 @@
                                 <td>{{user.email}}</td>
                                 <td>{{user.username}}</td>
                                 <td> 
-                                    <router-link :to="{path: '/edit/'+ user.id, params: {data: user}}" @click.prevent="selectUser(user)"><b-icon variant="primary" icon="pencil"></b-icon></router-link>
+                                    <a href="#" @click.prevent="selectUser(user)"><b-icon variant="primary" icon="pencil"></b-icon></a>
                                     &nbsp;
                                     <a href="#" @click.prevent="deleteUser(user.id)">
                                         <b-icon variant="primary" icon="trash"></b-icon>
@@ -96,22 +96,32 @@
                     'Email',
                     'Username',
                     'Actions'
-                ]
+                ],
+                testUser: "Marcel",
+                selectedUser: {}
             }
         },
         methods: {
-            ...mapActions(['fetchUsers', 'deleteUser', 'selectUser', 'batchDeleteUsers']),
-            toggleUpdate() {
-                console.log('update toggled...')
-                this.updating = true
-            },
+            ...mapActions(['fetchUsers', 'deleteUser', 'batchDeleteUsers', 'updateFlag']),
             batchDelete() {
                 this.batchDeleteUsers(this.selected)
+            },
+            selectUser(user) {//assign to user object when edit is clicked
+                this.selectedUser = user
+                this.updateFlag(true)
             }
         },
         computed: {
-            ...mapGetters(['allUsers', 'allPagination']),
-            selectUsers: {
+            ...mapGetters(['allUsers', 'allPagination', 'updateToggle']),
+            setUser: { //selects user for update
+                get() {
+                    return this.selectedUser
+                },
+                set(value) {
+                    this.selectedUser = value
+                }
+            },
+            selectUsers: { //select users for deletion
                 get() {
                     return this.selected
                 },

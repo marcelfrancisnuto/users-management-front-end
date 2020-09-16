@@ -34,7 +34,7 @@
                 }
             }
         },
-        methods: {
+        methods: {//TODO: implement login using laravel sanctum
             login() {
                 axios.get('http://localhost:8000/sanctum/csrf-cookie')
                 .then(res => {

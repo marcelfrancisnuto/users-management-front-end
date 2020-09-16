@@ -48,7 +48,6 @@ const actions = {
         }
     },
     async addUser({ commit }, user) {
-        console.log(user)
         const response = await axios.post(
             `${state.api_host}/api/users`,
             user
@@ -77,9 +76,19 @@ const actions = {
                 })
         }
     },
-    selectUser({ commit }, user) {
-        commit('setSelectedUser', user)
-        commit('toggleUpdate', true)
+    async updateUser({ commit }, data) {
+        const response = await axios.put(`${state.api_host}/api/users/${data.id}`, data)
+        
+        if (response.data.success) {
+            alert('User has been updated')
+            commit('updateUser', data)
+        } else {
+            console.log('An error has occurred')
+        }
+        
+    },
+    updateFlag({ commit }, flag) {
+        commit('toggleUpdate', flag)
     },
     cancelUpdate({commit}) {
         commit('toggleUpdate', false)
@@ -92,7 +101,8 @@ const mutations = {
     newUser: (state, user) => state.users.unshift(user),
     removeUser: (state, id) => state.users = state.users.filter(user => user.id != id),
     setSelectedUser: (state, user) => (state.user = user),
-    toggleUpdate: (state, update) => (state.update = update)
+    toggleUpdate: (state, update) => (state.update = update),
+    updateUser: () => this.fetchUsers(null)
 }
 
 export default {
