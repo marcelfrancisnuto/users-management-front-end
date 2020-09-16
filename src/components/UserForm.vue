@@ -2,7 +2,7 @@
     <div class="col-md-6 mt-4 mb-4">
         <div class="card card-default">
             <div class="card-body">
-                <form @submit.prevent="addArticle">
+                <form @submit.prevent="onSubmit">
                     <div class="form-group">
                         <input type="email" class="form-control" v-model="user.email" id="email" aria-describedby="emailHelp" placeholder="Enter email">
                     </div>
@@ -21,6 +21,9 @@
                     <div class="form-group">
                         <input type="input" class="form-control" v-model="user.username" id="username" placeholder="Enter your Username">
                     </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" v-model="user.password" id="password" placeholder="Enter your Username">
+                    </div>
                     <button type="submit" class="btn btn-primary float-left">Save</button>
                 </form>
             </div>
@@ -29,6 +32,8 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
+
     export default {
         name: "UserForm",
         data() {
@@ -40,8 +45,16 @@
                     postal_code: '',
                     phone_number: '',
                     email: '',
-                    username: ''
+                    username: '',
+                    password: ''
                 }
+            }
+        },
+        methods: {
+            ...mapActions(['addUser']),
+            onSubmit(e) {
+                e.preventDefault()
+                this.addUser(this.user)
             }
         }
     }

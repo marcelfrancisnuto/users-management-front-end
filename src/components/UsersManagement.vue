@@ -14,11 +14,11 @@
                         <tbody>
                             <tr v-for="user in allUsers" :key="user.id">
                                 <td>
-                                    <!-- <b-form-checkbox 
+                                    <b-form-checkbox 
                                         v-model="selectedUsers" 
                                         :id="user.username" 
                                         :value="user.id"
-                                    ></b-form-checkbox> -->
+                                    ></b-form-checkbox>
                                 </td>
                                 <td>{{user.first_name}}</td>
                                 <td>{{user.last_name}}</td>
@@ -101,22 +101,21 @@
         methods: {
             ...mapActions(['fetchUsers', 'deleteUser'])
         },
-        computed: mapGetters(['allUsers', 'allPagination']),
+        computed: {
+            ...mapGetters(['allUsers', 'allPagination']),
+            selectedUsers: {
+                get() {
+                    return this.selected
+                },
+                set(value) {
+                    this.selected = value
+                    this.$store.commit('setSelectedUsers', value)
+                }
+            },
+        },
         created() {
             this.fetchUsers()
         }
-        // computed: {
-        //     //add selected users to an array, remove if deselected
-        //     selectedUsers: {
-        //         get() {
-        //             return this.selected;
-        //         },
-        //         set(value) {
-        //             this.selected = value;
-        //         }
-        //     },
-        //     mapGetters: ['allUsers']
-        // }
     }
 </script>
 
