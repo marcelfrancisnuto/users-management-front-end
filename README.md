@@ -1,13 +1,15 @@
-# users-management-frontend
+# Vue Frontend App
 
 ## Project setup
+
+**Clone project from repository**
 ```
-npm install
+$ git clone https://github.com/marcelfrancisnuto/users-management-front-end.git
 ```
 
-### Compiles and hot-reloads for development
+**Install NPM dependencies**
 ```
-npm run serve
+npm i
 ```
 
 ### Compiles and minifies for production
@@ -15,7 +17,14 @@ npm run serve
 npm run build
 ```
 
-### Run your unit tests
+```
+$ cd dist
+$ npm run serve
+```
+
+Access the app using default url `http://localhost:8080`
+
+### Run your unit tests(tests not available)
 ```
 npm run test:unit
 ```
@@ -24,6 +33,3 @@ npm run test:unit
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
